@@ -15,6 +15,33 @@ app.use(session({
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
 
+app.listen(process.env.PORT || 3000, () => console.log('App available on http://localhost:3000'));
+
+app.get('/', (request, response) => {
+
+        readFile('./test.html', 'utf8', (err, html) => {
+
+            if (err) {
+                response.status(500).send('Error occured');
+            }
+
+            response.send(html);
+
+        })
+    }
+);
+
+/*app.post('/lol', (request, response) => {
+
+    if (request === undefined) {
+        response.status(400);
+        return response.json({ message: "bad request" });
+    }
+    console.log("lol");
+    response.json({ count: 5 });
+
+});
+
 app.get('/', (request, response) => {
     if (false) {
         readFile('./login.html', 'utf8', (err, html) => {
@@ -194,4 +221,4 @@ async function insertD(obj) {
         await client.end();
     }
 }
-
+*/
