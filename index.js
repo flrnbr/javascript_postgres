@@ -87,12 +87,14 @@ app.post('/data', async (request, response) => {
         response.status(400);
         return response.json({ message: "bad request" });
     }
+    try{
+        const result = await getTable(request.body.id);
 
-    const result = await getTable(request.body.id);
-
-    console.table(result);
-    response.json(result);
-
+        console.table(result);
+        response.json(result);
+    }catch{
+        return response.json({ message: "no Answer" });
+    }
 })
 
 

@@ -152,8 +152,8 @@
                 event.preventDefault();
                 const id = document.getElementById("sid").value;
                 const table = await requestQuery(id);
-                console.log(table.length);
-                aktTab(table);
+                console.log(table);
+                //aktTab(table);
             }
 
             async function insert() {
