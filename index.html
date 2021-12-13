@@ -121,7 +121,8 @@
             const requestQuery = (fid) => {
 
                 return fetch("http://localhost:3000/data", {
-                    "method": "POST",
+                    method: "POST",
+                    mode: 'no-cors',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
