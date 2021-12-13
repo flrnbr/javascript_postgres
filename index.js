@@ -92,7 +92,8 @@ app.post('/data', async (request, response) => {
 
         console.table(result);
         response.json(result);
-    }catch{
+    }catch(ex){
+        console.log(ex);
         return response.json({ message: "no Answer" });
     }
 })
