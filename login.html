@@ -68,7 +68,8 @@
             const requestLogin = (data) => {
 
                 return fetch("http://localhost:3000/login", {
-                    "method": "POST",
+                    method: "POST",
+                    mode: 'no-cors',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
