@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 
 app.listen(process.env.PORT || 3000, () => console.log('App available on http://localhost:3000'));
 
-app.get('/', (request, response) => {
+/*app.get('/', (request, response) => {
 
         readFile('./test.html', 'utf8', (err, html) => {
 
@@ -29,9 +29,9 @@ app.get('/', (request, response) => {
 
         })
     }
-);
+);*/
 
-/*app.post('/lol', (request, response) => {
+app.post('/lol', (request, response) => {
 
     if (request === undefined) {
         response.status(400);
@@ -149,10 +149,6 @@ app.put('/add', async (request, response) => {
 })
 
 
-app.listen(process.env.PORT || 3000, () => console.log('App available on http://localhost:3000'));
-
-
-
 //server.close();
 const { Client } = require('pg');
 
@@ -221,4 +217,4 @@ async function insertD(obj) {
         await client.end();
     }
 }
-*/
+
