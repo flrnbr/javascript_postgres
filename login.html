@@ -1,0 +1,95 @@
+<html>
+
+    <head>
+        <style>
+            table {
+                border: solid;
+                border-color: aqua;
+                column-rule-color: aquamarine;
+                background-color: burlywood;
+                margin-top: 30px;
+                margin-bottom: 30px;
+            }
+
+            th {
+                border: solid;
+                border-spacing: 0cm;
+                border-color: chartreuse;
+                margin: 0px;
+            }
+
+            td {
+                border: solid;
+                border-color: blueviolet;
+                margin: 0px;
+            }
+
+            form> :nth-child(n) {
+                margin-top: 10px;
+
+            }
+
+            .flex-container {
+                position: absolute;
+                align-self: center;
+            }
+
+            .flex-item {
+                align-self: center;
+                margin-top: 10px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="flex-container">
+            <div class="flex-item" id="searchleiste">
+                <h3>Login</h3>
+                <label>E-Mail:</label>
+                <input class="flex-item" id="email" type="text" placeholder="email">
+                <br>
+                <label>Passwort:</label>
+                <input class="flex-item" id="passwort" type="text" placeholder="Passwort">
+                <br>
+                <button id="los" onclick="login()">Suche</button>
+            </div>
+        </div>
+
+        <script>
+
+            class Nutzer{
+                constructor(email,passwort){
+                    this.email = email;
+                    this.passwort = passwort;
+                    this.id = -1;
+                }
+            }
+
+            const requestLogin = (data) => {
+
+                return fetch("http://localhost:3000/login", {
+                    "method": "POST",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    "body": JSON.stringify({ email: data.email,  passwort: data.passwort})
+                })
+                    .then(result => result.json())
+                    .then(json => json)
+            }
+
+
+
+            async function login() {
+                const me = new Nutzer(document.getElementById("email").value, document.getElementById("passwort").value);
+                const data = await requestLogin(me);
+                me.id = data[0].fid;
+                console.log(me.id);
+            }
+
+        </script>
+
+    </body>
+
+</html>

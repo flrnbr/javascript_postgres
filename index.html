@@ -1,0 +1,175 @@
+<html>
+
+    <head>
+        <style>
+            table {
+                border: solid;
+                border-color: aqua;
+                column-rule-color: aquamarine;
+                background-color: burlywood;
+                margin-top: 30px;
+                margin-bottom: 30px;
+            }
+
+            th {
+                border: solid;
+                border-spacing: 0cm;
+                border-color: chartreuse;
+                margin: 0px;
+            }
+
+            td {
+                border: solid;
+                border-color: blueviolet;
+                margin: 0px;
+            }
+
+            form > :nth-child(n){
+                margin-top: 10px;
+
+            }
+
+            .flex-container{
+                position: absolute;
+                align-self:center;
+            }
+            .flex-item{
+                align-self: center;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="flex-container">
+            <div class="flex-item" id="searchleiste">
+                <h3>Suche deine Reisen</h3>
+                <input class="flex-item" id="sid" type="text" placeholder="Zu suchende Id">
+                <button id="los" onclick="getTable()">Suche</button>
+            </div>
+            <table class="flex-item" id="myTable">
+                <tr>
+                    <th>rid</th>
+                    <th>fid</th>
+                    <th>Reisename</th>
+                    <th>Reiseland</th>
+                    <th>Reisestart</th>
+                    <th>Reiseende</th>
+                </tr>
+            </table>
+
+            <h3>Füge eine Reise hinzufuegen</h3>
+            <form class="flex-item">
+                <input id="fid" type="text" placeholder="fid">
+                <br>
+                <input id="rname" type="text" placeholder="Reisename">
+                <br>
+                <input id="rland" type="text" placeholder="Reiseland">
+                <br>
+                <input id="sdate" type="date" placeholder="Startdatum:">
+                <br>
+                <input id="edate" type="date" placeholder="Endatum:">
+                <br>
+                <button class="add" onclick="insert()">hinzufuegen</button>
+            </form>
+        </div>
+
+        <script>
+
+            async function aktTab(data) {
+
+                var Table = document.getElementById("myTable");
+                var rows = Table.getElementsByTagName("tr");
+
+                while (Table.rows.length > 1) {
+                    Table.deleteRow(1);
+                }
+
+
+                // Hilfsvariable für neue Tabellenzeilen
+                var x;
+
+                var x0;
+                var x1;
+                var x2;
+                var x3;
+                var x4;
+                var x5;
+                var cur;
+
+                for (var i = 0; i < data.length; i++) {
+                    cur = data[i];
+                    x = Table.insertRow(Table.length);
+                    x0 = x.insertCell(0);
+                    x1 = x.insertCell(1);
+                    x2 = x.insertCell(2);
+                    x3 = x.insertCell(3);
+                    x4 = x.insertCell(4);
+                    x5 = x.insertCell(5);
+
+                    x0.innerHTML = cur.rid;
+                    x1.innerHTML = cur.fid;
+                    x2.innerHTML = cur.rname;
+                    x3.innerHTML = cur.rland;
+                    x4.innerHTML = cur.sdate;
+                    x5.innerHTML = cur.edate;
+
+                }
+            }
+
+            //gets DATA from DB 
+
+            const requestQuery = (fid) => {
+
+                return fetch("http://localhost:3000/data", {
+                    "method": "POST",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    "body": JSON.stringify({ id: fid })
+                })
+                    .then(result => result.json())
+                    .then(json => json)
+            }
+
+            //inserts Data into DB
+
+            const insertData = (data) => {
+
+                return fetch("http://localhost:3000/add", {
+                    "method": "PUT",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    "body": JSON.stringify(data)
+                })
+            }
+
+
+            async function getTable() {
+                event.preventDefault();
+                const id = document.getElementById("sid").value;
+                const table = await requestQuery(id);
+                console.log(table.length);
+                aktTab(table);
+            }
+
+            async function insert() {
+                console.log("insert");
+                const message = await insertData({
+                    rid: Date.now(),
+                    fid: document.getElementById("fid").value,
+                    rname: document.getElementById("rname").value,
+                    rland: document.getElementById("rland").value,
+                    sdate: document.getElementById("sdate").value,
+                    edate: document.getElementById("edate").value
+                });
+                getTable();
+            }
+
+        </script>
+
+    </body>
+
+</html>
