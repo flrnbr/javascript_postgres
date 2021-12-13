@@ -135,7 +135,7 @@ async function getLogin(email, passwort){
 
     const client = new Client({
         user: "postgres",
-        password: "Creature1998!",
+        password: "abcd1234!",
         host: "localhost",
         port: 5433,
         database: "test"
