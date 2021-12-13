@@ -80,7 +80,7 @@ app.post('/login', async (request, response) => {
 
     const client = new Client({
         user: "postgres",
-        password: "Creature1998!",
+        password: "abcd1234!",
         host: "localhost",
         port: 5433,
         database: "test"
@@ -155,7 +155,7 @@ async function getTable(id) {
 
     const client = new Client({
         user: "postgres",
-        password: "Creature1998!",
+        password: "abcd1234!",
         host: "localhost",
         port: 5433,
         database: "test"
@@ -176,7 +176,7 @@ async function insertD(obj) {
 
     const client = new Client({
         user: "postgres",
-        password: "Creature1998!",
+        password: "abcd1234!",
         host: "localhost",
         port: 5433,
         database: "test"
