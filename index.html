@@ -122,6 +122,8 @@
 
                 return fetch("http://localhost:3000/data", {
                     'method': "POST",
+                    mode: 'cors',
+                    credentials: 'include',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
@@ -138,6 +140,8 @@
 
                 return fetch("http://localhost:3000/add", {
                     "method": "PUT",
+                    mode: 'cors',
+                    credentials: 'include',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
