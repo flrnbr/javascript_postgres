@@ -120,9 +120,8 @@
 
             const requestQuery = (fid) => {
 
-                return fetch("https://webtechbackendgruppef.herokuapp.com/data", {
-                    method: "POST",
-                    mode: 'no-cors',
+                return fetch("http://localhost:3000/data", {
+                    'method': "POST",
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
@@ -153,7 +152,7 @@
                 const id = document.getElementById("sid").value;
                 const table = await requestQuery(id);
                 console.log(table);
-                //aktTab(table);
+                aktTab(table);
             }
 
             async function insert() {

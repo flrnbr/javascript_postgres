@@ -87,15 +87,14 @@ app.post('/data', async (request, response) => {
         response.status(400);
         return response.json({ message: "bad request" });
     }
-    try{
-        const result = await getTable(request.body.id);
 
-        console.table(result);
-        response.json(result);
-    }catch(ex){
-        console.log(ex);
-        return response.json({ message: "no Answer" });
-    }
+    console.log(request.body.id);
+
+    const result = await getTable(request.body.id);
+
+    console.table(result);
+    response.json(result);
+
 })
 
 
@@ -108,12 +107,20 @@ app.post('/login', async (request, response) => {
         return response.json({ message: "bad request" });
     }
 
-    const client = new Client({
+    /*const client = new Client({
         user: "postgres",
         password: "abcd1234!",
         host: "localhost",
         port: 5433,
         database: "test"
+    })*/
+    
+    const client = new Client({
+        user: "odvofehkpcnefo",
+        password: "c20fd3db89ded607dae8f8b09b47c8e470428f6294d00ecfbc9fa78485b26853",
+        host: "ec2-63-33-239-176.eu-west-1.compute.amazonaws.com",
+        port: 5432,
+        database: "d9nlc48c9mdgga"
     })
 
     var email = request.body.email;
@@ -152,6 +159,10 @@ app.put('/add', async (request, response) => {
 })
 
 
+
+
+
+
 //server.close();
 const { Client } = require('pg');
 
@@ -160,12 +171,13 @@ const { Client } = require('pg');
 async function getLogin(email, passwort){
 
     const client = new Client({
-        user: "postgres",
-        password: "abcd1234!",
-        host: "localhost",
-        port: 5433,
-        database: "test"
+        user: "odvofehkpcnefo",
+        password: "c20fd3db89ded607dae8f8b09b47c8e470428f6294d00ecfbc9fa78485b26853",
+        host: "ec2-63-33-239-176.eu-west-1.compute.amazonaws.com",
+        port: 5432,
+        database: "d9nlc48c9mdgga"
     })
+
 
     await client.connect()
     console.log("Connected")
@@ -180,32 +192,39 @@ async function getLogin(email, passwort){
 async function getTable(id) {
 
     const client = new Client({
-        user: "postgres",
-        password: "abcd1234!",
-        host: "localhost",
-        port: 5433,
-        database: "test"
+        user: "odvofehkpcnefo",
+        password: "c20fd3db89ded607dae8f8b09b47c8e470428f6294d00ecfbc9fa78485b26853",
+        host: "ec2-63-33-239-176.eu-west-1.compute.amazonaws.com",
+        port: 5432,
+        database: "d9nlc48c9mdgga"
     })
 
+    try{
+        await client.connect()
+        console.log("Connected")
+        console.log(id);
+        const result = await client.query("SELECT * from reisen WHERE reisen.fid = $1", [id])
 
-    await client.connect()
-    console.log("Connected")
-    const result = await client.query("SELECT * from reisen WHERE reisen.fid = $1", [id])
+        await client.end()
+    
+        return result.rows;
+    
 
-    await client.end()
+    }catch(ex){
+        console.log(ex);
+    }
 
-    return result.rows;
 }
 
 
 async function insertD(obj) {
 
     const client = new Client({
-        user: "postgres",
-        password: "abcd1234!",
-        host: "localhost",
-        port: 5433,
-        database: "test"
+        user: "odvofehkpcnefo",
+        password: "c20fd3db89ded607dae8f8b09b47c8e470428f6294d00ecfbc9fa78485b26853",
+        host: "ec2-63-33-239-176.eu-west-1.compute.amazonaws.com",
+        port: 5432,
+        database: "d9nlc48c9mdgga"
     })
 
     try {
@@ -220,4 +239,3 @@ async function insertD(obj) {
         await client.end();
     }
 }
-
