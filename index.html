@@ -71,6 +71,8 @@
                 <br>
                 <button class="add" onclick="insert()">hinzufuegen</button>
             </form>
+
+            <button id="logout" onclick="logout()">Logout</button>
         </div>
 
         <script>
@@ -120,7 +122,7 @@
 
             const requestQuery = (fid) => {
 
-                return fetch("http://localhost:3000/data", {
+                return fetch("https://webtechbackendgruppef.herokuapp.com/data", {
                     'method': "POST",
                     mode: 'cors',
                     credentials: 'include',
@@ -138,7 +140,7 @@
 
             const insertData = (data) => {
 
-                return fetch("http://localhost:3000/add", {
+                return fetch("https://webtechbackendgruppef.herokuapp.com/add", {
                     "method": "PUT",
                     mode: 'cors',
                     credentials: 'include',
@@ -170,6 +172,17 @@
                     edate: document.getElementById("edate").value
                 });
                 getTable();
+            }
+
+            async function logout() {
+                fetch("https://webtechbackendgruppef.herokuapp.com/logout", {
+                    method: "POST",
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
             }
 
         </script>

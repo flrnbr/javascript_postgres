@@ -57,8 +57,8 @@
 
         <script>
 
-            class Nutzer{
-                constructor(email,passwort){
+            class Nutzer {
+                constructor(email, passwort) {
                     this.email = email;
                     this.passwort = passwort;
                     this.id = -1;
@@ -67,27 +67,30 @@
 
             const requestLogin = (data) => {
 
-                return fetch("http://localhost:3000/login", {
+                console.log(data.email);
+                console.log(data.passwort);
+                return fetch("https://webtechbackendgruppef.herokuapp.com/login", {
                     method: "POST",
-                    mode: 'no-cors',
+                    mode: 'cors',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    "body": JSON.stringify({ email: data.email,  passwort: data.passwort})
+                    "body": JSON.stringify({ email: data.email, passwort: data.passwort })
                 })
-                    .then(result => result.json())
-                    .then(json => json)
+                    //.then(result => result.json())
+                    //.then(json => json)
             }
-
 
 
             async function login() {
                 const me = new Nutzer(document.getElementById("email").value, document.getElementById("passwort").value);
-                const data = await requestLogin(me);
-                me.id = data[0].fid;
-                console.log(me.id);
+                await requestLogin(me);
+                //console.log(log.id);
             }
+
+
+
 
         </script>
 

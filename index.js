@@ -2,17 +2,15 @@ const express = require('express');
 const { readFile, appendFileSync } = require('fs');
 var session = require('express-session');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 var path = require('path');
+var cookieSession = require('cookie-session')
 const app = express();
 var cors = require("cors");
 
 app.use(express.json())
-app.use(session({
-    secret: 'secret',
-    resave: true,
-    saveUninitialized: true
-}));
 
+app.use(cookieParser());
 
 app.use(
     cors({
@@ -21,22 +19,27 @@ app.use(
     })
 );
 
+app.use(session({
+    name: "session-id",
+    secret: "GFGEnter", // Secret key,
+    saveUninitialized: false,
+    resave: false,
+}))
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.listen(process.env.PORT || 3000, () => console.log('App available on http://localhost:3000'));
 
+
 const { Client } = require('pg');
+const req = require('express/lib/request');
 const client = new Client({
-    connectionString: process.env.DATABASE_URL,//'postgres://hjvtvdaqwbctgc:7a412bc60c6149eb762f1785e8069bb9113455beb89dd2fc17f0141a5ebfb100@ec2-52-208-254-158.eu-west-1.compute.amazonaws.com:5432/dcmps79tnu40t6',
-    //user: "hjvtvdaqwbctgc",
-    //password: "7a412bc60c6149eb762f1785e8069bb9113455beb89dd2fc17f0141a5ebfb100",
-    //host: "ec2-52-208-254-158.eu-west-1.compute.amazonaws.com",
-    //port: 5432,
-    //database: "dcmps79tnu40t6",
+    connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
 })
 client.connect();
+
 
 app.post('/lol', (request, response) => {
 
@@ -51,7 +54,8 @@ app.post('/lol', (request, response) => {
 
 
 app.get('/', (request, response) => {
-    if (false) {
+    console.log(request.session.id);
+    if (!request.session.user) {
         readFile('./login.html', 'utf8', (err, html) => {
 
             if (err) {
@@ -61,8 +65,7 @@ app.get('/', (request, response) => {
             response.send(html);
 
         })
-    }
-    if (true) {
+    } else {
         readFile('./index.html', 'utf8', (err, html) => {
 
             if (err) {
@@ -75,22 +78,12 @@ app.get('/', (request, response) => {
     }
 });
 
-app.post('/lol', (request, response) => {
-
-    if (request === undefined) {
-        response.status(400);
-        return response.json({ message: "bad request" });
-    }
-    console.log("lol");
-    response.json({ count: 5 });
-
-});
 
 app.use(express.json())
 
 app.post('/data', async (request, response) => {
 
-    if (request === undefined) {
+    if (request === undefined || !checkAuth(request)) {
         response.status(400);
         return response.json({ message: "bad request" });
     }
@@ -114,21 +107,37 @@ app.post('/login', async (request, response) => {
 
     var email = request.body.email;
     var passwort = request.body.passwort;
+    console.log(request.session);
+       
 
     const result = await client.query("SELECT * from nutzer WHERE nutzer.email = $1 AND nutzer.passwort = $2", [email, passwort]);
-    if (result.rows.length > 0) {
-        console.log(result.rows.length);
-        request.session.loggedin = true;
-        request.session.username = email;
-        response.redirect('/');
-    }
-    
-    console.table(result.rows);
-    response.json(result.rows);
+    console.log(result.rows.length);
 
+    if (result.rows.length > 0) {
+        request.session.user = email;
+        request.session.cookie.maxAge = 60*60*3600;
+        response.redirect('/');
+        //response.json({ status: "ok", id: result.rows[0].id });
+        
+    } else {
+    
+        response.json({ status: 'not ok', message: "Bad email or password" });
+    
+    }
 })
 
+app.post('/logout', async(request, response)=>{
+    if (request === undefined) {
+        response.status(400);
+        return response.json({ message: "bad request" });
+    }
+    request.session.destroy();
+    response.status(200).clearCookie('session-id', {
+      path: '/'
+    });
 
+
+})
 
 app.put('/add', async (request, response) => {
 
@@ -145,21 +154,7 @@ app.put('/add', async (request, response) => {
 
 
 
-async function getLogin(email, passwort) {
-
-
-    //await client.connect()
-    console.log("Connected")
-    const result = await client.query("SELECT * from nutzer WHERE nutzer.email = $1 AND nutzer.passwort = $2", [email, passwort])
-    //await client.end()
-
-    return result.rows;
-
-}
-
-
 async function getTable(id) {
-
 
 
     try {
@@ -173,6 +168,13 @@ async function getTable(id) {
 
 }
 
+function checkAuth(req){
+    if (!req.session.user) {
+        return false;
+    }else{
+        return true;
+    }
+}
 
 async function insertD(obj) {
 
@@ -180,7 +182,7 @@ async function insertD(obj) {
         await client.query("BEGIN")
         await client.query("INSERT INTO reisen VALUES ($1, $2, $3, $4, $5, $6)", [obj.id, obj.rname, obj.rland, obj.sdate, obj.edate, obj.nid])
         await client.query("COMMIT")
-    
+
     } catch (ex) {
         console.log(ex)
     }
