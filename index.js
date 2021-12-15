@@ -4,32 +4,38 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var path = require('path');
 const app = express();
-
+var cors = require("cors");
 
 app.use(express.json())
 app.use(session({
-	secret: 'secret',
-	resave: true,
-	saveUninitialized: true
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
 }));
-app.use(bodyParser.urlencoded({extended : true}));
+
+
+app.use(
+    cors({
+        origin: true,
+        credentials: true,
+    })
+);
+
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.listen(process.env.PORT || 3000, () => console.log('App available on http://localhost:3000'));
 
-/*app.get('/', (request, response) => {
+const { Client } = require('pg');
+const client = new Client({
+    user: "hjvtvdaqwbctgc",
+    password: "7a412bc60c6149eb762f1785e8069bb9113455beb89dd2fc17f0141a5ebfb100",
+    host: "ec2-52-208-254-158.eu-west-1.compute.amazonaws.com",
+    port: 5432,
+    database: "dcmps79tnu40t6",
+    ssl: { rejectUnauthorized: false }
+})
 
-        readFile('./test.html', 'utf8', (err, html) => {
-
-            if (err) {
-                response.status(500).send('Error occured');
-            }
-
-            response.send(html);
-
-        })
-    }
-);*/
 
 app.post('/lol', (request, response) => {
 
@@ -43,6 +49,7 @@ app.post('/lol', (request, response) => {
 });
 
 app.get('/', (request, response) => {
+    client.connect();
     if (false) {
         readFile('./login.html', 'utf8', (err, html) => {
 
@@ -54,7 +61,7 @@ app.get('/', (request, response) => {
 
         })
     }
-    if(true){
+    if (true) {
         readFile('./index.html', 'utf8', (err, html) => {
 
             if (err) {
@@ -65,7 +72,6 @@ app.get('/', (request, response) => {
 
         })
     }
-    //response.redirect('/lol');
 });
 
 app.post('/lol', (request, response) => {
@@ -107,37 +113,17 @@ app.post('/login', async (request, response) => {
         return response.json({ message: "bad request" });
     }
 
-    /*const client = new Client({
-        user: "postgres",
-        password: "abcd1234!",
-        host: "localhost",
-        port: 5433,
-        database: "test"
-    })*/
-    
-    const client = new Client({
-        user: "odvofehkpcnefo",
-        password: "c20fd3db89ded607dae8f8b09b47c8e470428f6294d00ecfbc9fa78485b26853",
-        host: "ec2-63-33-239-176.eu-west-1.compute.amazonaws.com",
-        port: 5432,
-        database: "d9nlc48c9mdgga"
-    })
-
     var email = request.body.email;
     var passwort = request.body.passwort;
 
-    await client.connect()
-    console.log("Connected")
-    const result = await client.query("SELECT * from nutzer WHERE nutzer.email = $1 AND nutzer.passwort = $2" , [email,passwort]);
-    if(result.rows.length > 0){
+    const result = await client.query("SELECT * from nutzer WHERE nutzer.email = $1 AND nutzer.passwort = $2", [email, passwort]);
+    if (result.rows.length > 0) {
         console.log(result.rows.length);
         request.session.loggedin = true;
         request.session.username = email;
         response.redirect('/');
     }
-    await client.end()
-
-
+    
     console.table(result.rows);
     response.json(result.rows);
 
@@ -160,29 +146,13 @@ app.put('/add', async (request, response) => {
 
 
 
+async function getLogin(email, passwort) {
 
 
-
-//server.close();
-const { Client } = require('pg');
-
-
-
-async function getLogin(email, passwort){
-
-    const client = new Client({
-        user: "odvofehkpcnefo",
-        password: "c20fd3db89ded607dae8f8b09b47c8e470428f6294d00ecfbc9fa78485b26853",
-        host: "ec2-63-33-239-176.eu-west-1.compute.amazonaws.com",
-        port: 5432,
-        database: "d9nlc48c9mdgga"
-    })
-
-
-    await client.connect()
+    //await client.connect()
     console.log("Connected")
-    const result = await client.query("SELECT * from nutzer WHERE nutzer.email = $1 AND nutzer.passwort = $2" , [email,passwort])
-    await client.end()
+    const result = await client.query("SELECT * from nutzer WHERE nutzer.email = $1 AND nutzer.passwort = $2", [email, passwort])
+    //await client.end()
 
     return result.rows;
 
@@ -191,26 +161,14 @@ async function getLogin(email, passwort){
 
 async function getTable(id) {
 
-    const client = new Client({
-        user: "odvofehkpcnefo",
-        password: "c20fd3db89ded607dae8f8b09b47c8e470428f6294d00ecfbc9fa78485b26853",
-        host: "ec2-63-33-239-176.eu-west-1.compute.amazonaws.com",
-        port: 5432,
-        database: "d9nlc48c9mdgga"
-    })
 
-    try{
-        await client.connect()
-        console.log("Connected")
+
+    try {
         console.log(id);
-        const result = await client.query("SELECT * from reisen WHERE reisen.fid = $1", [id])
-
-        await client.end()
-    
+        const result = await client.query("SELECT * from reisen WHERE reisen.nid = $1", [id])
         return result.rows;
-    
 
-    }catch(ex){
+    } catch (ex) {
         console.log(ex);
     }
 
@@ -219,23 +177,12 @@ async function getTable(id) {
 
 async function insertD(obj) {
 
-    const client = new Client({
-        user: "odvofehkpcnefo",
-        password: "c20fd3db89ded607dae8f8b09b47c8e470428f6294d00ecfbc9fa78485b26853",
-        host: "ec2-63-33-239-176.eu-west-1.compute.amazonaws.com",
-        port: 5432,
-        database: "d9nlc48c9mdgga"
-    })
-
     try {
-        await client.connect();
-        console.log("Connected")
         await client.query("BEGIN")
-        await client.query("INSERT INTO reisen VALUES ($1, $2, $3, $4, $5, $6)", [obj.rid, obj.fid, obj.rland, obj.sdate, obj.edate, obj.rname])
+        await client.query("INSERT INTO reisen VALUES ($1, $2, $3, $4, $5, $6)", [obj.id, obj.rname, obj.rland, obj.sdate, obj.edate, obj.nid])
         await client.query("COMMIT")
+    
     } catch (ex) {
         console.log(ex)
-    } finally {
-        await client.end();
     }
 }

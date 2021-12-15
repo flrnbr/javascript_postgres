@@ -106,8 +106,8 @@
                     x4 = x.insertCell(4);
                     x5 = x.insertCell(5);
 
-                    x0.innerHTML = cur.rid;
-                    x1.innerHTML = cur.fid;
+                    x0.innerHTML = cur.id;
+                    x1.innerHTML = cur.nid;
                     x2.innerHTML = cur.rname;
                     x3.innerHTML = cur.rland;
                     x4.innerHTML = cur.sdate;
@@ -120,7 +120,7 @@
 
             const requestQuery = (fid) => {
 
-                return fetch("http://localhost:3000/data", {
+                return fetch("https://webtechbackendgruppef.herokuapp.com//data", {
                     'method': "POST",
                     mode: 'cors',
                     credentials: 'include',
@@ -138,7 +138,7 @@
 
             const insertData = (data) => {
 
-                return fetch("http://localhost:3000/add", {
+                return fetch("https://webtechbackendgruppef.herokuapp.com//add", {
                     "method": "PUT",
                     mode: 'cors',
                     credentials: 'include',
@@ -162,8 +162,8 @@
             async function insert() {
                 console.log("insert");
                 const message = await insertData({
-                    rid: Date.now(),
-                    fid: document.getElementById("fid").value,
+                    id: Date.now(),
+                    nid: document.getElementById("fid").value,
                     rname: document.getElementById("rname").value,
                     rland: document.getElementById("rland").value,
                     sdate: document.getElementById("sdate").value,
