@@ -41,18 +41,6 @@ const client = new Client({
 client.connect();
 
 
-app.post('/lol', (request, response) => {
-
-    if (request === undefined) {
-        response.status(400);
-        return response.json({ message: "bad request" });
-    }
-    console.log("lol");
-    response.json({ count: 5 });
-
-});
-
-
 app.get('/', (request, response) => {
     console.log(request.session.id);
     if (!request.session.user) {
@@ -116,8 +104,7 @@ app.post('/login', async (request, response) => {
     if (result.rows.length > 0) {
         request.session.user = email;
         request.session.cookie.maxAge = 60*60*3600;
-        response.redirect('/');
-        //response.json({ status: "ok", id: result.rows[0].id });
+        response.json({ status: "ok", id: result.rows[0].id });
         
     } else {
     
