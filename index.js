@@ -28,14 +28,15 @@ app.listen(process.env.PORT || 3000, () => console.log('App available on http://
 
 const { Client } = require('pg');
 const client = new Client({
-    user: "hjvtvdaqwbctgc",
-    password: "7a412bc60c6149eb762f1785e8069bb9113455beb89dd2fc17f0141a5ebfb100",
-    host: "ec2-52-208-254-158.eu-west-1.compute.amazonaws.com",
-    port: 5432,
-    database: "dcmps79tnu40t6",
+    connectionString: process.env.DATABASE_URL,//'postgres://hjvtvdaqwbctgc:7a412bc60c6149eb762f1785e8069bb9113455beb89dd2fc17f0141a5ebfb100@ec2-52-208-254-158.eu-west-1.compute.amazonaws.com:5432/dcmps79tnu40t6',
+    //user: "hjvtvdaqwbctgc",
+    //password: "7a412bc60c6149eb762f1785e8069bb9113455beb89dd2fc17f0141a5ebfb100",
+    //host: "ec2-52-208-254-158.eu-west-1.compute.amazonaws.com",
+    //port: 5432,
+    //database: "dcmps79tnu40t6",
     ssl: { rejectUnauthorized: false }
 })
-
+client.connect();
 
 app.post('/lol', (request, response) => {
 
@@ -48,8 +49,8 @@ app.post('/lol', (request, response) => {
 
 });
 
+
 app.get('/', (request, response) => {
-    client.connect();
     if (false) {
         readFile('./login.html', 'utf8', (err, html) => {
 
@@ -102,8 +103,6 @@ app.post('/data', async (request, response) => {
     response.json(result);
 
 })
-
-
 
 
 app.post('/login', async (request, response) => {

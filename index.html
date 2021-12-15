@@ -120,7 +120,7 @@
 
             const requestQuery = (fid) => {
 
-                return fetch("https://webtechbackendgruppef.herokuapp.com/data", {
+                return fetch("http://localhost:3000/data", {
                     'method': "POST",
                     mode: 'cors',
                     credentials: 'include',
@@ -138,7 +138,7 @@
 
             const insertData = (data) => {
 
-                return fetch("https://webtechbackendgruppef.herokuapp.com/add", {
+                return fetch("http://localhost:3000/add", {
                     "method": "PUT",
                     mode: 'cors',
                     credentials: 'include',
