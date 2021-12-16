@@ -24,16 +24,17 @@
                 margin: 0px;
             }
 
-            form > :nth-child(n){
+            form> :nth-child(n) {
                 margin-top: 10px;
 
             }
 
-            .flex-container{
+            .flex-container {
                 position: absolute;
-                align-self:center;
+                align-self: center;
             }
-            .flex-item{
+
+            .flex-item {
                 align-self: center;
             }
         </style>
@@ -118,6 +119,20 @@
                 }
             }
 
+
+            const requestAuth = () => {
+
+                return fetch("https://webtechbackendgruppef.herokuapp.com/auth", {
+                    method: "POST",
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(result => result.json())
+                    .then(json => json)
+            }
             //gets DATA from DB 
 
             const requestQuery = (fid) => {
@@ -157,6 +172,8 @@
                 event.preventDefault();
                 const id = document.getElementById("sid").value;
                 const table = await requestQuery(id);
+                const log = await requestAuth();
+                console.log(log.auth);
                 console.log(table);
                 aktTab(table);
             }
