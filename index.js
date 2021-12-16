@@ -106,7 +106,7 @@ app.post('/login', async (request, response) => {
         request.session.user = email;
         request.session.isAuth = true;
         request.session.cookie.maxAge = 60*60*3600;
-        console.log('Session Nutzer:' + request.session.user);
+        console.log('Session Nutzer:' + request.session.isAuth);
         response.json({ status: "ok", id: result.rows[0].id });
         
     } else {
