@@ -34,6 +34,7 @@ app.listen(process.env.PORT || 3000, () => console.log('App available on http://
 
 const { Client } = require('pg');
 const req = require('express/lib/request');
+const { response } = require('express');
 const client = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
@@ -123,6 +124,19 @@ app.post('/logout', async(request, response)=>{
       path: '/'
     });
 
+
+})
+
+app.post('/auth', async(request,response)=>{
+    if (request === undefined) {
+        response.status(400);
+        return response.json({ message: "bad request" });
+    }
+    if (!request.session.user) {
+        response.json({ auth: false});
+    }else{
+        response.json({auth: true});
+    }
 
 })
 
