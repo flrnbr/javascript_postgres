@@ -105,7 +105,7 @@ app.post('/login', async (request, response) => {
     if (result.rows.length > 0) {
         request.session.user = email;
         request.session.cookie.maxAge = 60*60*3600;
-        console.log(request.session.user);
+        console.log('Session Nutzer:' + request.session.user);
         response.json({ status: "ok", id: result.rows[0].id });
         
     } else {
