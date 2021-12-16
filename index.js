@@ -132,6 +132,7 @@ app.post('/auth', async(request,response)=>{
         response.status(400);
         return response.json({ message: "bad request" });
     }
+    console.log(request.session.id);
     if (!request.session.user) {
         response.json({ auth: false});
     }else{
