@@ -104,6 +104,7 @@ app.post('/login', async (request, response) => {
 
     if (result.rows.length > 0) {
         request.session.user = email;
+        request.session.isAuth = true;
         request.session.cookie.maxAge = 60*60*3600;
         console.log('Session Nutzer:' + request.session.user);
         response.json({ status: "ok", id: result.rows[0].id });
@@ -134,7 +135,7 @@ app.post('/auth', async(request,response)=>{
         return response.json({ message: "bad request" });
     }
     console.log(request.session);
-    if (!request.session.user) {
+    if (!request.session.isAuth) {
         response.json({ auth: false});
     }else{
         response.json({auth: true});
